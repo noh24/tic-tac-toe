@@ -116,24 +116,31 @@ function boardClick(event) {
     gameBoard.addTotalSymbol();
     gameBoard.changeTurn();
     winningCondition(event);
-    
   }
 }
 function winningCondition(event) {
   const winner = checkWin(event.target.id);
+  
     if (winner !== null) {
       setTimeout(function () {
         if (winner === "X") {
           alert("Player X Wins");
         } else if (winner === "O") {
           alert("Player O Wins");
-        } else if (checkDraw(gameBoard.totalSymbols)) {
+        } 
+      }, 150);
+    grid.removeEventListener('click', boardClick);
+    } else if (winner === null) {
+      setTimeout(function() {
+        if (checkDraw(gameBoard.totalSymbols)) {
           alert("Y'all too smart. No winner!");
+          grid.removeEventListener('click', boardClick);
         }
       }, 150);
-      grid.removeEventListener('click', boardClick);
     }
+//     grid.removeEventListener('click', boardClick);
 }
+
 const grid = document.querySelector("div.grid-container");
 grid.addEventListener('click', boardClick);
 
