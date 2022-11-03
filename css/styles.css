@@ -1,0 +1,41 @@
+.empty {
+  border: 2px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(1rem, 9rem ,10rem);
+  font-family: ;
+  padding: clamp(2rem, 3rem, 5rem);
+  min-height: 1.3em;
+}
+
+.top {
+  border-top: 0px;
+}
+
+.bottom {
+  border-bottom: 0px;
+}
+.right {
+  border-right: 0px;
+}
+.left {
+  border-left: 0px;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 50em;
+  min-height: 50em;
+  margin: auto;
+}
+
+.reset-button {
+  position: absolute;
+  left: 47%;
+  margin: auto;
+}
+
+#reset-game {
+  height: 50px;
+}
