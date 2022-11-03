@@ -1,54 +1,106 @@
 //Business
-id = 00; id = 01; id = 02;
-id = 10; id = 11; id = 12;
-id = 20; id = 21; id = 22; 
-1 = X
-2 = O
+// id = 00; id = 01; id = 02;
+// id = 10; id = 11; id = 12;
+// id = 20; id = 21; id = 22;
+// 1 = X
+// 2 = O
 function GameBoard() {
-  this.space = [[0,0,0],[0,0,0],[0,0,0]];
+  this.space = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
   this.playerTurn = 1;
   this.currentSymbol = "X";
   this.totalSymbols = 0;
+  //boolean gameOver
+  //string winner
 }
 
-GameBoard.prototype.assignSymbol = function(event) {
-  let x = parseInt(Number(event.target.id) / 10); 
-  let y = Number(event.target.id) % 10;
-  
-  if (this.space[x][y] > 0 ) {
-    return false 
-  } else {
-    if (this.playerTurn % 2 === 1 )  {
-      this.space[x][y] = "X";
-      playerTurn++;
-    } else {
-      this.space[x][y] = "O";
-      playerTurn++;
-    }
+
+
+//UI functions
+//drawBoard
+
+//boardClick
+  //assign symbol
+  //check win
+    // if (gameOver)
+    //   if(winner === X)
+  //drawBoard
+GameBoard.prototype.assignSymbol = function (event) {
+  let x = parseInt(Number(event) / 10);
+  let y = Number(event) % 10;
+  if (this.playerTurn % 2 === 1) {//player 1
+    this.currentSymbol = "X";
+  } else {                        //player 2
+    this.currentSymbol = "O";
   }
-  checkWin(x, y);
+
+  if (this.space[x][y] !== 0) {
+    return false;
+  } else {
+    this.space[x][y] = this.currentSymbol;
+  }
+
+  checkWin(x, y)
+  this.totalSymbols++;
+  checkDraw(this.totalSymbols);
+  this.playerTurn++;
+  return true;
+}
+
+function checkDraw(totalSymbols) {
+  if (totalSymbols >= 9) {
+      handleDraw();//output draw message
+    }
+  return false; //keep going
 }
 
 function checkWin(x, y) {
-  if(checkRow(x) || checkColumn(y) || checkEdge(x,y) || checkMiddle())
-}
-function checkRow(x) {
-  for (let i = 0; i < 3; i++) { //checking the row 
-    if (spaces[x][i] !== gameBoard.currentSymbol) {
-      return false;
+  if (checkRow(x) || checkColumn(y) || checkEdges()) {
+    //gameOver = true
+    console.log("Winner" + gameBoard.currentSymbol)
+    if(this.currentSymbol === "X") {
+      //winner = X
+      return handlePlayer1Win; // player 1 won message
+    }
+    else {
+      //winner = O
+      return handlePlayer2Win; //player 2 won message
     }
   }
-  return true;
+  return false;
 }
-function checkColumn(y) {
+
+function resetGame() {
+  this.space = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  this.playerTurn = 1;
+  this.totalSymbols = 0;
+}
+
+function checkEdges() {
+  if (gameBoard.space[0][0] === gameBoard.space[1][1] && gameBoard.space[1][1] === gameBoard.space[2][2] && gameBoard.space[2][2] === gameBoard.currentSymbol) {
+    return true;
+  } else if (gameBoard.space[0][2] === gameBoard.space[1][1] && gameBoard.space[1][1] === gameBoard.space[2][0] && gameBoard.space[2][0] === gameBoard.currentSymbol) {
+    return true;
+  }
+  return false;
+}
+
+function checkRow(x) {
   for (let i = 0; i < 3; i++) { //checking the row 
-    if (spaces[i][y] !== gameBoard.currentSymbol) {
+    if (gameBoard.space[x][i] !== gameBoard.currentSymbol) {
       return false;
     }
   }
   return true;
 }
 
+function checkColumn(y) {
+  for (let i = 0; i < 3; i++) { //checking the row 
+    if (gameBoard.space[i][y] !== gameBoard.currentSymbol) {
+      return false;
+    }
+  }
+  return true;
+}
 
 let gameBoard = new GameBoard();
 
@@ -56,6 +108,11 @@ let gameBoard = new GameBoard();
 
 
 
+//UI
+
+function handlePlayer1Win() {};
+function handlePlayer2Win() {};
+function handleDraw() {};
 
 
 
@@ -79,66 +136,3 @@ let gameBoard = new GameBoard();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-isTerminal() {
-  //Return False if board in empty
-  if (this.isEmpty()) return false;
-  //Checking Horizontal Wins
-  if (this.state[0] === this.state[1] && this.state[0] === this.state[2] && this.state[0]) {
-    return { 'winner': this.state[0], 'direction': 'H', 'row': 1 };
-  }
-  if (this.state[3] === this.state[4] && this.state[3] === this.state[5] && this.state[3]) {
-    return { 'winner': this.state[3], 'direction': 'H', 'row': 2 };
-  }
-  if (this.state[6] === this.state[7] && this.state[6] === this.state[8] && this.state[6]) {
-    return { 'winner': this.state[6], 'direction': 'H', 'row': 3 };
-  }
-//Checking Vertical Wins
-if(this.state[0] === this.state[3] && this.state[0] === this.state[6] && this.state[0]) {
-  return {'winner': this.state[0], 'direction': 'V', 'column': 1};
-}
-if(this.state[1] === this.state[4] && this.state[1] === this.state[7] && this.state[1]) {
-  return {'winner': this.state[1], 'direction': 'V', 'column': 2};
-}
-if(this.state[2] === this.state[5] && this.state[2] === this.state[8] && this.state[2]) {
-  return {'winner': this.state[2], 'direction': 'V', 'column': 3};
-}
-
-//Checking Diagonal Wins
-if(this.state[0] === this.state[4] && this.state[0] === this.state[8] && this.state[0]) {
-  return {'winner': this.state[0], 'direction': 'D', 'diagonal': 'main'};
-}
-if(this.state[2] === this.state[4] && this.state[2] === this.state[6] && this.state[2]) {
-  return {'winner': this.state[2], 'direction': 'D', 'diagonal': 'counter'};
-}
-
-//If no winner but the board is full, then it's a draw
-if(this.isFull()) {
-    return {'winner': 'draw'};
-}
-
-//return false otherwise
-return false;
-}
