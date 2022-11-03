@@ -12,21 +12,25 @@ function GameBoard() {
   //boolean gameOver
   //string winner
 }
-
-
-
 //UI functions
 //drawBoard
 
 //boardClick
-  //assign symbol
-  //check win
-    // if (gameOver)
-    //   if(winner === X)
-  //drawBoard
-GameBoard.prototype.assignSymbol = function (event) {
-  let x = parseInt(Number(event) / 10);
-  let y = Number(event) % 10;
+//assign symbol
+//drawBoard
+//check win
+
+GameBoard.prototype.changeTurn = function () {
+  this.playerTurn++;
+}
+
+GameBoard.prototype.addTotalSymbol = function () {
+  this.totalSymbols++;
+}
+
+GameBoard.prototype.assignSymbol = function (id) {
+  let x = parseInt(Number(id) / 10);
+  let y = Number(id) % 10;
   if (this.playerTurn % 2 === 1) {//player 1
     this.currentSymbol = "X";
   } else {                        //player 2
@@ -38,41 +42,37 @@ GameBoard.prototype.assignSymbol = function (event) {
   } else {
     this.space[x][y] = this.currentSymbol;
   }
-
-  checkWin(x, y)
-  this.totalSymbols++;
-  checkDraw(this.totalSymbols);
-  this.playerTurn++;
   return true;
+};
+
+function resetGame(gameBoard) {
+  gameBoard.space = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  gameBoard.playerTurn = 1;
+  gameBoard.currentSymbol = "X";
+  gameBoard.totalSymbols = 0;
 }
 
 function checkDraw(totalSymbols) {
   if (totalSymbols >= 9) {
-      handleDraw();//output draw message
-    }
+    return true;//output draw message
+  }
   return false; //keep going
 }
 
-function checkWin(x, y) {
+function checkWin(id) {
+  let x = parseInt(Number(id) / 10);
+  let y = Number(id) % 10;
   if (checkRow(x) || checkColumn(y) || checkEdges()) {
-    //gameOver = true
-    console.log("Winner" + gameBoard.currentSymbol)
-    if(this.currentSymbol === "X") {
+    if (gameBoard.currentSymbol === "X") {
       //winner = X
-      return handlePlayer1Win; // player 1 won message
+      return "X"; // player 1 won message
     }
     else {
       //winner = O
-      return handlePlayer2Win; //player 2 won message
+      return "O"; //player 2 won message
     }
   }
-  return false;
-}
-
-function resetGame() {
-  this.space = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
-  this.playerTurn = 1;
-  this.totalSymbols = 0;
+  return null;
 }
 
 function checkEdges() {
@@ -104,20 +104,51 @@ function checkColumn(y) {
 
 let gameBoard = new GameBoard();
 
-
-
-
-
 //UI
+function drawBoard(target) {
+  target.innerText = gameBoard.currentSymbol;
+}
 
-function handlePlayer1Win() {};
-function handlePlayer2Win() {};
-function handleDraw() {};
+function boardClick(event) {
+  console.log(event.target.id);
+  if (gameBoard.assignSymbol(event.target.id)) {
+    drawBoard(event.target);
+    gameBoard.addTotalSymbol();
+    gameBoard.changeTurn();
+    winningCondition(event);
+    
+  }
+}
+function winningCondition(event) {
+  const winner = checkWin(event.target.id);
+    if (winner !== null) {
+      setTimeout(function () {
+        if (winner === "X") {
+          alert("Player X Wins");
+        } else if (winner === "O") {
+          alert("Player O Wins");
+        } else if (checkDraw(gameBoard.totalSymbols)) {
+          alert("Y'all too smart. No winner!");
+        }
+      }, 150);
+      grid.removeEventListener('click', boardClick);
+    }
+}
+const grid = document.querySelector("div.grid-container");
+grid.addEventListener('click', boardClick);
 
+function resetBoard() {
+  resetGame(gameBoard);
+  const divEmptyArray = Array.from(document.querySelectorAll("div.empty"));
+  
+  for (let i = 0; i < divEmptyArray.length; i++) {
+    divEmptyArray[i].innerText = null;
+  }
+  
+  grid.addEventListener('click', boardClick);
+};
 
-
-
-
+document.getElementById("reset-game").addEventListener("click", resetBoard);
 
 
 
